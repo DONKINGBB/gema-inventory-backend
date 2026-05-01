@@ -21,4 +21,4 @@ COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
 
 # Comando para iniciar la aplicación con preferencia de IPv4
-ENTRYPOINT ["java", "-Djava.net.preferIPv4Stack=true", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-Djava.net.preferIPv4Addresses=true", "-jar", "app.jar"]
