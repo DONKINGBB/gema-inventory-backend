@@ -1,8 +1,8 @@
 # Fase 1: Compilación
-FROM maven:3.8.4-openjdk-17-slim AS build
+FROM maven:3.8.4-openjdk-17 AS build
 WORKDIR /app
 
-# Copiar el archivo pom.xml y descargar dependencias (para caché)
+# Copiar el archivo pom.xml y descargar dependencias
 COPY pom.xml .
 RUN mvn dependency:go-offline
 
@@ -11,12 +11,10 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # Fase 2: Ejecución
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:17-jre-focal
 WORKDIR /app
 
-# Copiar el archivo JAR generado desde la fase de compilación
-# Nota: El nombre del JAR suele ser [artifactId]-[version].jar
-# Usamos un comodín para que funcione independientemente del nombre exacto
+# Copiar el archivo JAR generado
 COPY --from=build /app/target/*.jar app.jar
 
 # Exponer el puerto 8080
