@@ -20,5 +20,5 @@ COPY --from=build /app/target/*.jar app.jar
 # Exponer el puerto 8080
 EXPOSE 8080
 
-# Comando para iniciar la aplicación
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Comando para iniciar la aplicación con preferencia de IPv4
+ENTRYPOINT ["java", "-Djava.net.preferIPv4Stack=true", "-jar", "app.jar"]
