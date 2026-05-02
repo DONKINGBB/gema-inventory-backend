@@ -116,25 +116,29 @@ public class AuthController {
     public ResponseEntity<Map<String, Object>> googleLogin(@RequestBody GoogleLoginDto dto) {
         Map<String, Object> response = new HashMap<>();
 
-        // 1. Buscar si ya existe
+        // 1. Buscar si ya existe por Google ID o por Correo
         Optional<Usuario> userOpt = usuarioRepository.findByCorreoAndActivoTrue(dto.getCorreo());
 
         Usuario usuarioFinal;
 
         if (userOpt.isPresent()) {
-            // YA EXISTE: Iniciamos sesión
             usuarioFinal = userOpt.get();
+            // Si no tenía google_id, se lo asignamos ahora
+            if (usuarioFinal.getGoogleId() == null) {
+                usuarioFinal.setGoogleId(dto.getId());
+                usuarioRepository.save(usuarioFinal);
+            }
         } else {
-            // NO EXISTE: Lo registramos automáticamente SIN negocio asignado
-            // Esto obliga al usuario a pasar por el Onboarding (Crear o Unirse)
+            // NO EXISTE: Lo registramos
             Usuario nuevo = new Usuario();
+            nuevo.setGoogleId(dto.getId());
             nuevo.setCorreo(dto.getCorreo());
             nuevo.setNombre(dto.getNombre());
-            nuevo.setPasswordHash(""); // Sin contraseña porque entra con Google
+            nuevo.setPasswordHash(""); 
             nuevo.setDireccion("Pendiente");
             nuevo.setTelefono("Pendiente");
-            nuevo.setIdRol(1); // Rol inicial 1 (Administrador potencial)
-            nuevo.setIdNegocio(null); // Obligatorio para ruteo a Onboarding
+            nuevo.setIdRol(1);
+            nuevo.setIdNegocio(null);
 
             usuarioFinal = usuarioRepository.save(nuevo);
         }

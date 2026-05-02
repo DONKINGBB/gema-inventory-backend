@@ -27,13 +27,15 @@ public class Usuario {
     @Column(name = "nombre")
     private String nombre;
 
-    @Column(name = "contrase\u00f1a", nullable = false)
+    @Column(name = "contrase\u00f1a")
     private String passwordHash;
 
     @Column(name = "id_rol", nullable = false)
     private Integer idRol;
 
-    // --- AGREGAMOS ESTOS DOS ---
+    @Column(name = "google_id", unique = true)
+    private String googleId;
+
     @Column(name = "direccion")
     private String direccion;
 
