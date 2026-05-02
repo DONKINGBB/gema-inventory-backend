@@ -27,7 +27,7 @@ public class Usuario {
     @Column(name = "nombre")
     private String nombre;
 
-    @Column(name = "password_hash", nullable = false)
+    @Column(name = "contrase\u00f1a", nullable = false)
     private String passwordHash;
 
     @Column(name = "id_rol", nullable = false)
