@@ -29,7 +29,7 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 // --- ENDPOINTS PÚBLICOS ---
-                .requestMatchers("/", "/api/auth/**", "/uploads/**", "/api/upload").permitAll() // Raíz, Login, Registro, Upload e Imágenes abiertos
+                .requestMatchers("/", "/api/auth/**", "/uploads/**", "/api/upload", "/error").permitAll() // Raíz, Login, Registro, Upload, Imágenes y Error abiertos
                 
                 // --- SISTEMA DE NEGOCIOS (Onboarding) ---
                 .requestMatchers("/api/negocios/**").authenticated() 
