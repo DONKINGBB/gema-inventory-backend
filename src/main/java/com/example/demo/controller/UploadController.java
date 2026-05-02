@@ -31,23 +31,28 @@ public class UploadController {
         }
 
         try {
-            // Determinar el bucket de Supabase
-            String bucket = "general"; // Bucket por defecto
+            // Determinar el bucket de Supabase (SIEMPRE EN MINÚSCULAS)
+            String bucket = "general"; 
             if ("profiles".equalsIgnoreCase(folder)) {
-                bucket = "PROFILES";
+                bucket = "profiles";
             } else if ("products".equalsIgnoreCase(folder)) {
-                bucket = "PRODUCTS";
+                bucket = "products";
             }
+
+            System.out.println("Intentando subir a Supabase. Bucket: " + bucket + " | Folder param: " + folder);
 
             // Subir a Supabase Storage
             String fileUrl = supabaseStorageService.uploadFile(bucket, file);
+
+            System.out.println("Subida exitosa: " + fileUrl);
 
             // Devolver la URL pública devuelta por Supabase
             response.put("url", fileUrl);
             
             return ResponseEntity.ok(response);
 
-        } catch (IOException ex) {
+        } catch (Exception ex) {
+            System.err.println("ERROR CRÍTICO EN UPLOAD: " + ex.getMessage());
             ex.printStackTrace();
             response.put("error", "Error al subir el archivo a Supabase: " + ex.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
