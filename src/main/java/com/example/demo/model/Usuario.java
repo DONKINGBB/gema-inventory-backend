@@ -22,13 +22,13 @@ public class Usuario {
     private String id;
 
     @Column(name = "correo", unique = true)
-    private String user; // En Android lo mandas como 'correo', aquí lo mapeas a 'user'
+    private String correo;
 
     @Column(name = "nombre")
     private String nombre;
 
-    @Column(name = "contraseña", nullable = false)
-    private String password;
+    @Column(name = "password_hash", nullable = false)
+    private String passwordHash;
 
     @Column(name = "id_rol", nullable = false)
     private Integer idRol;
