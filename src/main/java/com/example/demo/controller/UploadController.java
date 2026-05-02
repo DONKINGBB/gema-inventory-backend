@@ -22,7 +22,10 @@ public class UploadController {
     private final String UPLOAD_DIR = "uploads/";
 
     @PostMapping
-    public ResponseEntity<Map<String, String>> uploadFile(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<Map<String, String>> uploadFile(
+            @RequestParam(value = "folder", defaultValue = "general") String folder,
+            @RequestParam("file") MultipartFile file) {
+        
         Map<String, String> response = new HashMap<>();
         
         if (file.isEmpty()) {
@@ -31,13 +34,21 @@ public class UploadController {
         }
 
         try {
-            // Crear el directorio si no existe
-            Path uploadPath = Paths.get(UPLOAD_DIR);
+            // Determinar la subcarpeta (perfil, producto o general)
+            String subFolder = "general/";
+            if ("profiles".equalsIgnoreCase(folder)) {
+                subFolder = "profiles/";
+            } else if ("products".equalsIgnoreCase(folder)) {
+                subFolder = "products/";
+            }
+
+            // Crear el directorio completo si no existe
+            Path uploadPath = Paths.get(UPLOAD_DIR + subFolder);
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
             }
 
-            // Generar nombre de archivo único para evitar colisiones
+            // Generar nombre de archivo único
             String originalFileName = StringUtils.cleanPath(file.getOriginalFilename());
             String extension = "";
             int i = originalFileName.lastIndexOf('.');
@@ -46,12 +57,12 @@ public class UploadController {
             }
             String uniqueFileName = UUID.randomUUID().toString() + extension;
 
-            // Guardar el archivo
+            // Guardar el archivo en la subcarpeta
             Path targetLocation = uploadPath.resolve(uniqueFileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
-            // Devolver la ruta relativa a la imagen
-            String fileUrl = "/uploads/" + uniqueFileName;
+            // Devolver la URL con la subcarpeta incluida
+            String fileUrl = "/uploads/" + subFolder + uniqueFileName;
             response.put("url", fileUrl);
             
             return ResponseEntity.ok(response);
